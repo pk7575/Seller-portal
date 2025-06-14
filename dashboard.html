@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seller Dashboard</title>
+</head>
+<body>
+  <h1>📦 Seller Dashboard</h1>
+  <button onclick="logout()">Logout</button>
+
+  <h2>📤 Upload Product</h2>
+  <form id="upload-form">
+    <input type="text" id="title" placeholder="Title" required />
+    <input type="number" id="price" placeholder="Price" required />
+    <input type="text" id="description" placeholder="Description" required />
+    <input type="text" id="image" placeholder="Image URL" />
+    <button type="submit">Upload</button>
+  </form>
+
+  <h2>📋 Your Products</h2>
+  <div id="products"></div>
+
+  <script>
+    const token = localStorage.getItem("seller_token");
+    if (!token) window.location.href = "login.html";
+
+    // Upload Product
+    document.getElementById("upload-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById("title").value,
+        price: document.getElementById("price").value,
+        description: document.getElementById("description").value,
+        image: document.getElementById("image").value
+      };
+
+      const res = await fetch("https://suriyawan-backend-18.onrender.com/api/seller/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (data.success) loadDashboard();
+    });
+
+    function logout() {
+      localStorage.removeItem("seller_token");
+      window.location.href = "login.html";
+    }
+
+    async function loadDashboard() {
+      const res = await fetch("https://suriyawan-backend-18.onrender.com/api/seller/dashboard", {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById("products").innerHTML =
+          `<p>Total Products: ${data.totalProducts}</p>
+           <p>Total Value: ${data.totalValue}</p>` +
+          data.products.map(p => `
+            <div style="margin:10px;padding:10px;border:1px solid #ccc;">
+              <strong>${p.title}</strong> - ₹${p.price}<br/>
+              ${p.description}<br/>
+              ${p.image ? `<img src="${p.image}" width="100"/>` : ''}
+            </div>
+          `).join('');
+      }
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
