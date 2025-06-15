@@ -61,3 +61,47 @@ button:hover {
   border: 1px solid #ddd;
   border-radius: 8px;
 }
+
+/* ============================= */
+/* 🔖 Custom Section Styles: s1–s25 */
+/* ============================= */
+
+#s1, #s2, #s3, #s4, #s5,
+#s6, #s7, #s8, #s9, #s10,
+#s11, #s12, #s13, #s14, #s15,
+#s16, #s17, #s18, #s19, #s20,
+#s21, #s22, #s23, #s24, #s25 {
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.05);
+}
+
+/* Optional: Alternate section coloring for visibility */
+#s1  { background-color: #fff; }
+#s2  { background-color: #f9f9f9; }
+#s3  { background-color: #fff; }
+#s4  { background-color: #f9f9f9; }
+#s5  { background-color: #fff; }
+#s6  { background-color: #f9f9f9; }
+#s7  { background-color: #fff; }
+#s8  { background-color: #f9f9f9; }
+#s9  { background-color: #fff; }
+#s10 { background-color: #f9f9f9; }
+#s11 { background-color: #fff; }
+#s12 { background-color: #f9f9f9; }
+#s13 { background-color: #fff; }
+#s14 { background-color: #f9f9f9; }
+#s15 { background-color: #fff; }
+#s16 { background-color: #f9f9f9; }
+#s17 { background-color: #fff; }
+#s18 { background-color: #f9f9f9; }
+#s19 { background-color: #fff; }
+#s20 { background-color: #f9f9f9; }
+#s21 { background-color: #fff; }
+#s22 { background-color: #f9f9f9; }
+#s23 { background-color: #fff; }
+#s24 { background-color: #f9f9f9; }
+#s25 { background-color: #fff; }
