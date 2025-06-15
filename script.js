@@ -1,14 +1,6 @@
 const BASE_URL = "https://suriyawan-saffari-backend.onrender.com/api/seller";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("sellerToken");
-  if (token) {
-    document.getElementById("login-section").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-    loadProducts();
-  }
-});
-
+// 🔐 Login
 function login() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -22,8 +14,8 @@ function login() {
     .then(data => {
       if (data.success) {
         localStorage.setItem("sellerToken", data.token);
-        document.getElementById("login-section").classList.add("hidden");
-        document.getElementById("dashboard").classList.remove("hidden");
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("dashboardSection").classList.remove("hidden");
         loadProducts();
       } else {
         alert("❌ Login failed: " + data.message);
@@ -32,15 +24,17 @@ function login() {
     .catch(err => alert("⚠️ Server error"));
 }
 
+// 🔓 Logout
 function logout() {
   localStorage.removeItem("sellerToken");
   location.reload();
 }
 
+// ➕ Add Product
 function addProduct() {
   const name = document.getElementById("productName").value;
   const price = document.getElementById("productPrice").value;
-  const description = document.getElementById("productDesc").value;
+  const description = document.getElementById("productDescription").value;
 
   const token = localStorage.getItem("sellerToken");
 
@@ -64,6 +58,7 @@ function addProduct() {
     .catch(err => alert("⚠️ Error adding product"));
 }
 
+// 📋 Load Products
 function loadProducts() {
   const token = localStorage.getItem("sellerToken");
 
@@ -94,3 +89,13 @@ function loadProducts() {
       alert("⚠️ Failed to load products");
     });
 }
+
+// ✅ Auto Login if Token Exists
+window.onload = () => {
+  const token = localStorage.getItem("sellerToken");
+  if (token) {
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("dashboardSection").classList.remove("hidden");
+    loadProducts();
+  }
+};
