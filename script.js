@@ -163,6 +163,47 @@ function deleteProduct(id) {
     });
 }
 
+// 💾 Update Seller Profile (category, pincode, password)
+function updateProfile() {
+  const category = document.getElementById("updateCategory").value.trim();
+  const pincode = document.getElementById("updatePincode").value.trim();
+  const password = document.getElementById("updatePassword").value.trim();
+  const token = localStorage.getItem("sellerToken");
+
+  if (!token) return alert("❌ Unauthorized");
+
+  const body = {};
+  if (category) body.category = category;
+  if (pincode) body.pincode = pincode;
+  if (password) body.password = password;
+
+  if (Object.keys(body).length === 0) {
+    return alert("⚠️ Please fill at least one field to update.");
+  }
+
+  fetch(`${BASE_URL}/profile`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify(body)
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("✅ Profile updated!");
+        loadSellerProfile();
+        document.getElementById("updateCategory").value = "";
+        document.getElementById("updatePincode").value = "";
+        document.getElementById("updatePassword").value = "";
+      } else {
+        alert("❌ Update failed: " + data.message);
+      }
+    })
+    .catch(() => alert("⚠️ Server error"));
+}
+
 // 🚀 Auto Login
 window.onload = () => {
   const token = localStorage.getItem("sellerToken");
