@@ -83,21 +83,29 @@ function loadProducts() {
     .then(data => {
       const list = document.getElementById("productList");
       list.innerHTML = "";
+      let count = 0;
 
       if (data.products && data.products.length > 0) {
         data.products.forEach(product => {
+          count++;
           const li = document.createElement("li");
           li.innerHTML = `
             <img src="${product.imageUrl || ''}" alt="Image" style="width:100px;height:auto;margin-bottom:5px;"><br>
             <strong>${product.name}</strong> - ₹${product.price}<br>
             <small>${product.description}</small><br/>
+            <span>ID: ${product._id}</span><br/>
             <button onclick="editProduct('${product._id}', \`${product.name}\`, '${product.price}', \`${product.description}\`)">✏️ Edit</button>
             <button onclick="deleteProduct('${product._id}')">🗑️ Delete</button>
+            <button onclick="copyProductID('${product._id}')">📋 Copy ID</button>
+            <button onclick="toggleProduct('${product._id}')">🚦 Toggle Availability</button>
+            <button onclick="changeProductImage('${product._id}')">🖼️ Change Image</button>
           `;
           list.appendChild(li);
         });
+        document.getElementById("productCount").textContent = `Total Products: ${count}`;
       } else {
         list.innerHTML = "<li>No products found.</li>";
+        document.getElementById("productCount").textContent = "Total Products: 0";
       }
     })
     .catch(() => alert("⚠️ Could not fetch products"));
@@ -117,6 +125,7 @@ function loadSellerProfile() {
         document.getElementById("profileUsername").textContent = data.seller.username;
         document.getElementById("profileCategory").textContent = data.seller.category || "Not Set";
         document.getElementById("profilePincode").textContent = data.seller.pincode || "Not Set";
+        document.getElementById("sellerId").textContent = `Seller ID: ${data.seller._id}`;
       }
     })
     .catch(() => console.log("⚠️ Failed to load seller profile"));
@@ -202,6 +211,70 @@ function updateProfile() {
       }
     })
     .catch(() => alert("⚠️ Error updating profile"));
+}
+
+// 🚦 Toggle Product Availability
+function toggleProduct(id) {
+  const token = localStorage.getItem("sellerToken");
+  fetch(`${BASE_URL}/product/${id}/toggle`, {
+    method: "PATCH",
+    headers: { "Authorization": "Bearer " + token }
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message || "Availability toggled!");
+      loadProducts();
+    })
+    .catch(() => alert("❌ Toggle failed"));
+}
+
+// 📋 Copy Product ID
+function copyProductID(id) {
+  navigator.clipboard.writeText(id).then(() => {
+    alert("📋 Product ID copied!");
+  });
+}
+
+// 🖼️ Change Product Image
+function changeProductImage(id) {
+  const file = prompt("Upload new image not supported in prompt. Use form input on UI instead.");
+  // You can add file input on UI and handle here if needed
+}
+
+// 🔐 Reset Password
+function resetPassword() {
+  const newPass = prompt("Enter new password:");
+  if (!newPass) return;
+
+  const token = localStorage.getItem("sellerToken");
+  fetch(`${BASE_URL}/reset-password`, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ password: newPass })
+  })
+    .then(res => res.json())
+    .then(data => alert(data.message || "Password updated"))
+    .catch(() => alert("❌ Error resetting password"));
+}
+
+// 💾 Export Product JSON
+function exportProductJSON() {
+  const token = localStorage.getItem("sellerToken");
+  fetch(`${BASE_URL}/products`, {
+    headers: { "Authorization": "Bearer " + token }
+  })
+    .then(res => res.json())
+    .then(data => {
+      const blob = new Blob([JSON.stringify(data.products, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "products.json";
+      link.click();
+    })
+    .catch(() => alert("❌ Export failed"));
 }
 
 // 🚀 Auto Login
