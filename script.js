@@ -81,8 +81,9 @@ function loadProducts() {
           const li = document.createElement("li");
           li.innerHTML = `
             <strong>${product.name}</strong> - ₹${product.price}<br>
-            <small>${product.description}</small>
-            <!-- ✏️ Future: Edit/Delete buttons can be added here -->
+            <small>${product.description}</small><br/>
+            <button onclick="editProduct('${product._id}', \`${product.name}\`, '${product.price}', \`${product.description}\`)">✏️ Edit</button>
+            <button onclick="deleteProduct('${product._id}')">🗑️ Delete</button>
           `;
           list.appendChild(li);
         });
@@ -112,16 +113,6 @@ function loadSellerProfile() {
     .catch(() => console.log("⚠️ Failed to load seller profile"));
 }
 
-// 🚀 Auto Login
-window.onload = () => {
-  const token = localStorage.getItem("sellerToken");
-  if (token) {
-    document.getElementById("loginSection").classList.add("hidden");
-    document.getElementById("dashboardSection").classList.remove("hidden");
-    loadSellerProfile();
-    loadProducts();
-  }
-};
 // 📝 Edit Product
 function editProduct(id, currentName, currentPrice, currentDesc) {
   const name = prompt("Edit Product Name:", currentName);
@@ -171,3 +162,14 @@ function deleteProduct(id) {
       }
     });
 }
+
+// 🚀 Auto Login
+window.onload = () => {
+  const token = localStorage.getItem("sellerToken");
+  if (token) {
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("dashboardSection").classList.remove("hidden");
+    loadSellerProfile();
+    loadProducts();
+  }
+};
