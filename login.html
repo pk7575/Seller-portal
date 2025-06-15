@@ -2,7 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Seller Login</title>
+  <title>🔐 Seller Login</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+    }
+    h2 { color: #2e7d32; }
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #login-msg {
+      text-align: center;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <h2>🔐 Seller Login</h2>
@@ -27,7 +63,7 @@
       const data = await res.json();
       if (data.success) {
         localStorage.setItem("seller_token", data.token);
-        window.location.href = "dashboard.html";
+        window.location.href = "seller-dashboard.html"; // ✅ Corrected filename
       } else {
         document.getElementById("login-msg").textContent = data.message;
       }
