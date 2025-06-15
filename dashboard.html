@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Seller Dashboard</title>
@@ -42,12 +41,19 @@
       border-radius: 6px;
       cursor: pointer;
     }
+    .action-btns button {
+      margin-right: 10px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+    }
+    .edit-btn { background: #ffa000; color: white; }
+    .delete-btn { background: #d32f2f; color: white; }
   </style>
 </head>
 <body>
-  <h2>📦 Seller Dashboard <button id="logout">Logout</button></h2>
-
-  <div class="card">
+  <h2>📦 Seller Dashboard <button id="logout">Logout</button></h2>  <div class="card">
     <h3>📤 Upload Product</h3>
     <form id="product-form">
       <input type="text" id="title" placeholder="Title" required />
@@ -57,14 +63,10 @@
       <button type="submit">Add Product</button>
     </form>
     <p id="form-message"></p>
-  </div>
-
-  <div class="card">
+  </div>  <div class="card">
     <h3>📋 Your Products</h3>
     <div id="product-list">Loading...</div>
-  </div>
-
-  <script>
+  </div>  <script>
     const token = localStorage.getItem("seller_token");
     if (!token) {
       alert("🔐 Please login first");
@@ -76,7 +78,6 @@
       "Content-Type": "application/json"
     };
 
-    // ✅ Load all seller products
     async function loadProducts() {
       const res = await fetch("https://suriyawan-backend-18.onrender.com/api/seller/dashboard", {
         headers
@@ -91,7 +92,11 @@
             <div style="margin:10px 0; padding:10px; border:1px solid #ddd; border-radius:6px;">
               <strong>${p.title}</strong> - ₹${p.price}<br/>
               ${p.description}<br/>
-              ${p.image ? `<img src="${p.image}" alt="${p.title}"/>` : ''}
+              ${p.image ? `<img src="${p.image}" alt="${p.title}"/>` : ''}<br/>
+              <div class="action-btns">
+                <button class="edit-btn" onclick="editProduct('${p._id}', '${p.title}', '${p.price}', '${p.description}', '${p.image}')">Edit</button>
+                <button class="delete-btn" onclick="deleteProduct('${p._id}')">Delete</button>
+              </div>
             </div>
           `;
         });
@@ -100,9 +105,52 @@
       }
     }
 
-    loadProducts();
+    async function deleteProduct(id) {
+      if (!confirm("Are you sure you want to delete this product?")) return;
+      const res = await fetch(`https://suriyawan-backend-18.onrender.com/api/seller/products/${id}`, {
+        method: "DELETE",
+        headers
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadProducts();
+      } else {
+        alert("❌ Failed to delete product");
+      }
+    }
 
-    // ✅ Add product
+    function editProduct(id, title, price, description, image) {
+      document.getElementById("title").value = title;
+      document.getElementById("price").value = price;
+      document.getElementById("description").value = description;
+      document.getElementById("image").value = image;
+      document.getElementById("form-message").innerHTML = `<strong>✏️ Updating product...</strong>`;
+
+      document.getElementById("product-form").onsubmit = async function(e) {
+        e.preventDefault();
+        const payload = {
+          title: document.getElementById("title").value,
+          price: document.getElementById("price").value,
+          description: document.getElementById("description").value,
+          image: document.getElementById("image").value
+        };
+
+        const res = await fetch(`https://suriyawan-backend-18.onrender.com/api/seller/products/${id}`, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById("form-message").innerText = "✅ Product updated successfully!";
+          loadProducts();
+          document.getElementById("product-form").reset();
+        } else {
+          document.getElementById("form-message").innerText = "❌ Failed to update product.";
+        }
+      };
+    }
+
     document.getElementById("product-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const payload = {
@@ -122,16 +170,15 @@
       if (data.success) {
         document.getElementById("form-message").innerText = "✅ Product added successfully!";
         loadProducts();
+        document.getElementById("product-form").reset();
       } else {
         document.getElementById("form-message").innerText = "❌ Failed to add product.";
       }
     });
 
-    // ✅ Logout
     document.getElementById("logout").addEventListener("click", () => {
       localStorage.removeItem("seller_token");
       window.location.href = "seller-login.html";
     });
-  </script>
-</body>
+  </script></body>
 </html>
