@@ -38,7 +38,7 @@
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
-    input, textarea, button {
+    input, textarea, button, select {
       width: 100%;
       max-width: 400px;
       padding: 10px;
@@ -81,6 +81,11 @@
       height: auto;
       display: block;
       margin-bottom: 5px;
+    }
+    @media (max-width: 600px) {
+      input, textarea, button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -125,17 +130,60 @@
         <button onclick="updateProfile()">💾 Update Profile</button>
       </div>
 
-      <!-- ➕ Add Product (with image upload) -->
-      <h3>Add New Product</h3>
-      <input type="text" id="productName" placeholder="Product Name" />
-      <input type="number" id="productPrice" placeholder="Price" />
-      <textarea id="productDesc" placeholder="Description"></textarea>
-      <input type="file" id="productImage" accept="image/*" />
-      <button onclick="addProduct()">📷 Add Product with Image</button>
+      <!-- ➕ Add Product (Multiple Image Upload) -->
+      <div class="section">
+        <h3>➕ Add New Product</h3>
+        <input type="text" id="productName" placeholder="Product Name" />
+        <input type="number" id="productPrice" placeholder="Price" />
+        <textarea id="productDesc" placeholder="Description"></textarea>
+        <input type="file" id="productImage" accept="image/*" />
+        <input type="file" id="productGallery" accept="image/*" multiple />
+        <select id="productCategory">
+          <option value="">Select Category</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Home">Home</option>
+        </select>
+        <button onclick="addProduct()">📷 Add Product</button>
+      </div>
 
       <!-- 📋 Product List -->
-      <h3>📋 Your Products</h3>
-      <ul id="productList">Loading...</ul>
+      <div class="section">
+        <h3>📋 Your Products</h3>
+        <ul id="productList">Loading...</ul>
+      </div>
+
+      <!-- ✏️ Edit/Delete Controls (Handled in JS) -->
+
+      <!-- ⭐ Reviews -->
+      <div class="section">
+        <h3>⭐ Product Reviews</h3>
+        <ul id="reviewList">
+          <li>No reviews available.</li>
+        </ul>
+      </div>
+
+      <!-- 📈 Sales Analytics -->
+      <div class="section">
+        <h3>📈 Sales Analytics</h3>
+        <div id="salesChart">[Analytics Chart Placeholder]</div>
+      </div>
+
+      <!-- 🔔 Notifications -->
+      <div class="section">
+        <h3>🔔 Notifications</h3>
+        <ul id="notificationList">
+          <li>Welcome to your dashboard!</li>
+        </ul>
+      </div>
+
+      <!-- 🤖 Ask Benco AI -->
+      <div class="section">
+        <h3>🤖 Ask Benco (AI Assistant)</h3>
+        <input type="text" id="bencoInput" placeholder="Ask something..." />
+        <button onclick="askBenco()">💬 Ask</button>
+        <div id="bencoResponse" style="margin-top: 10px; font-style: italic;"></div>
+      </div>
 
       <!-- 🔓 Logout -->
       <button onclick="logout()">🔓 Logout</button>
