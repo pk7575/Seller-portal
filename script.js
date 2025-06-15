@@ -122,3 +122,52 @@ window.onload = () => {
     loadProducts();
   }
 };
+// 📝 Edit Product
+function editProduct(id, currentName, currentPrice, currentDesc) {
+  const name = prompt("Edit Product Name:", currentName);
+  const price = prompt("Edit Product Price:", currentPrice);
+  const description = prompt("Edit Product Description:", currentDesc);
+
+  const token = localStorage.getItem("sellerToken");
+  if (!token) return alert("❌ Unauthorized. Please login again.");
+
+  fetch(`${BASE_URL}/product/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({ name, price, description })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("✅ Product updated successfully!");
+        loadProducts();
+      } else {
+        alert("❌ Failed to update: " + data.message);
+      }
+    });
+}
+
+// ❌ Delete Product
+function deleteProduct(id) {
+  if (!confirm("Are you sure you want to delete this product?")) return;
+
+  const token = localStorage.getItem("sellerToken");
+  if (!token) return alert("❌ Unauthorized. Please login again.");
+
+  fetch(`${BASE_URL}/product/${id}`, {
+    method: "DELETE",
+    headers: { "Authorization": "Bearer " + token }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("🗑️ Product deleted!");
+        loadProducts();
+      } else {
+        alert("❌ Failed to delete: " + data.message);
+      }
+    });
+}
