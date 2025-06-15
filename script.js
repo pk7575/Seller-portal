@@ -31,22 +31,29 @@ function logout() {
   location.reload();
 }
 
-// ➕ Add Product
+// ➕ Add Product (with image)
 function addProduct() {
   const name = document.getElementById("productName").value.trim();
   const price = document.getElementById("productPrice").value.trim();
   const description = document.getElementById("productDesc").value.trim();
+  const imageFile = document.getElementById("productImage").files[0];
   const token = localStorage.getItem("sellerToken");
 
   if (!token) return alert("❌ Please login again");
+  if (!name || !price || !description || !imageFile) {
+    return alert("⚠️ Please fill all fields and select an image.");
+  }
+
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("price", price);
+  formData.append("description", description);
+  formData.append("image", imageFile);
 
   fetch(`${BASE_URL}/product`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify({ name, price, description })
+    headers: { "Authorization": "Bearer " + token },
+    body: formData
   })
     .then(res => res.json())
     .then(data => {
@@ -55,6 +62,7 @@ function addProduct() {
         document.getElementById("productName").value = "";
         document.getElementById("productPrice").value = "";
         document.getElementById("productDesc").value = "";
+        document.getElementById("productImage").value = "";
         loadProducts();
       } else {
         alert("❌ " + data.message);
@@ -80,6 +88,7 @@ function loadProducts() {
         data.products.forEach(product => {
           const li = document.createElement("li");
           li.innerHTML = `
+            <img src="${product.imageUrl || ''}" alt="Image" style="width:100px;height:auto;margin-bottom:5px;"><br>
             <strong>${product.name}</strong> - ₹${product.price}<br>
             <small>${product.description}</small><br/>
             <button onclick="editProduct('${product._id}', \`${product.name}\`, '${product.price}', \`${product.description}\`)">✏️ Edit</button>
@@ -163,23 +172,14 @@ function deleteProduct(id) {
     });
 }
 
-// 💾 Update Seller Profile (category, pincode, password)
+// 🧩 Update Seller Profile
 function updateProfile() {
   const category = document.getElementById("updateCategory").value.trim();
   const pincode = document.getElementById("updatePincode").value.trim();
   const password = document.getElementById("updatePassword").value.trim();
   const token = localStorage.getItem("sellerToken");
 
-  if (!token) return alert("❌ Unauthorized");
-
-  const body = {};
-  if (category) body.category = category;
-  if (pincode) body.pincode = pincode;
-  if (password) body.password = password;
-
-  if (Object.keys(body).length === 0) {
-    return alert("⚠️ Please fill at least one field to update.");
-  }
+  if (!token) return alert("❌ Please login again");
 
   fetch(`${BASE_URL}/profile`, {
     method: "PUT",
@@ -187,21 +187,21 @@ function updateProfile() {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + token
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify({ category, pincode, password })
   })
     .then(res => res.json())
     .then(data => {
       if (data.success) {
         alert("✅ Profile updated!");
-        loadSellerProfile();
         document.getElementById("updateCategory").value = "";
         document.getElementById("updatePincode").value = "";
         document.getElementById("updatePassword").value = "";
+        loadSellerProfile();
       } else {
-        alert("❌ Update failed: " + data.message);
+        alert("❌ Failed to update: " + data.message);
       }
     })
-    .catch(() => alert("⚠️ Server error"));
+    .catch(() => alert("⚠️ Error updating profile"));
 }
 
 // 🚀 Auto Login
