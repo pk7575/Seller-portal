@@ -3,62 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Seller Dashboard – Suriyawan Saffari</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Arial', sans-serif;
-      background: #f8f9fa;
-      color: #212529;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px 20px;
-    }
-    h1 {
-      color: #0069d9;
-    }
-    .card {
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 20px 25px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 550px;
-      text-align: center;
-      margin-top: 20px;
-    }
-    .status {
-      font-size: 16px;
-      margin-top: 12px;
-      color: green;
-    }
-    .note {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #6c757d;
-    }
-    footer {
-      margin-top: 40px;
-      font-size: 13px;
-      color: #adb5bd;
-    }
-  </style>
+  <title>Seller Dashboard - Suriyawan Saffari</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="container">
+    <h1>🛍️ Seller Portal</h1>
 
-  <h1>📦 Seller Dashboard</h1>
+    <div id="login-section" class="card">
+      <h2>🔐 Seller Login</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>
 
-  <div class="card">
-    <h2 id="welcome-msg">Connecting to backend...</h2>
-    <p>Manage your products, check sales, track inventory and more.</p>
-    <p class="status" id="status-msg">Backend connection loading...</p>
-    <p class="note">Future AI features & stock alerts will appear here.</p>
+    <div id="dashboard" class="hidden">
+      <h2>👋 Welcome, Seller</h2>
+      <button onclick="logout()">🚪 Logout</button>
+
+      <div class="card">
+        <h3>➕ Add Product</h3>
+        <input type="text" id="productName" placeholder="Product Name" />
+        <input type="number" id="productPrice" placeholder="Price (₹)" />
+        <textarea id="productDesc" placeholder="Description"></textarea>
+        <button onclick="addProduct()">Add Product</button>
+      </div>
+
+      <div class="card">
+        <h3>📦 Your Products</h3>
+        <div id="productList" class="product-list"></div>
+      </div>
+    </div>
   </div>
 
-  <footer>
-    Suriyawan Saffari – Seller Control Panel
-  </footer>
-
   <script src="script.js"></script>
-</body
+</body>
+</html>
