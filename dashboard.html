@@ -3,29 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <title>Seller Dashboard</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f2f2f2;
+    }
+    h2 { color: #0050b3; }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+    }
+    form input, form textarea {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    form button {
+      padding: 0.7rem 1.5rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    img { max-width: 100px; border-radius: 4px; }
+    #logout {
+      float: right;
+      background: #e53935;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>📦 Seller Dashboard</h1>
-  <button onclick="logout()">Logout</button>
+  <h2>📦 Seller Dashboard <button id="logout">Logout</button></h2>
 
-  <h2>📤 Upload Product</h2>
-  <form id="upload-form">
-    <input type="text" id="title" placeholder="Title" required />
-    <input type="number" id="price" placeholder="Price" required />
-    <input type="text" id="description" placeholder="Description" required />
-    <input type="text" id="image" placeholder="Image URL" />
-    <button type="submit">Upload</button>
-  </form>
+  <div class="card">
+    <h3>📤 Upload Product</h3>
+    <form id="product-form">
+      <input type="text" id="title" placeholder="Title" required />
+      <input type="number" id="price" placeholder="Price (₹)" required />
+      <input type="text" id="description" placeholder="Description" />
+      <input type="text" id="image" placeholder="Image URL (optional)" />
+      <button type="submit">Add Product</button>
+    </form>
+    <p id="form-message"></p>
+  </div>
 
-  <h2>📋 Your Products</h2>
-  <div id="products"></div>
+  <div class="card">
+    <h3>📋 Your Products</h3>
+    <div id="product-list">Loading...</div>
+  </div>
 
   <script>
     const token = localStorage.getItem("seller_token");
-    if (!token) window.location.href = "login.html";
+    if (!token) {
+      alert("🔐 Please login first");
+      window.location.href = "seller-login.html";
+    }
 
-    // Upload Product
-    document.getElementById("upload-form").addEventListener("submit", async (e) => {
+    const headers = {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    };
+
+    // ✅ Load all seller products
+    async function loadProducts() {
+      const res = await fetch("https://suriyawan-backend-18.onrender.com/api/seller/dashboard", {
+        headers
+      });
+      const data = await res.json();
+      if (data.success) {
+        const list = document.getElementById("product-list");
+        list.innerHTML = `<p>Total Products: ${data.totalProducts}</p>
+          <p>Total Value: ₹${data.totalValue}</p><hr>`;
+        data.products.forEach(p => {
+          list.innerHTML += `
+            <div style="margin:10px 0; padding:10px; border:1px solid #ddd; border-radius:6px;">
+              <strong>${p.title}</strong> - ₹${p.price}<br/>
+              ${p.description}<br/>
+              ${p.image ? `<img src="${p.image}" alt="${p.title}"/>` : ''}
+            </div>
+          `;
+        });
+      } else {
+        document.getElementById("product-list").innerText = "❌ Failed to load products.";
+      }
+    }
+
+    loadProducts();
+
+    // ✅ Add product
+    document.getElementById("product-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const payload = {
         title: document.getElementById("title").value,
@@ -36,45 +114,24 @@
 
       const res = await fetch("https://suriyawan-backend-18.onrender.com/api/seller/products", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        },
+        headers,
         body: JSON.stringify(payload)
       });
 
       const data = await res.json();
-      if (data.success) loadDashboard();
+      if (data.success) {
+        document.getElementById("form-message").innerText = "✅ Product added successfully!";
+        loadProducts();
+      } else {
+        document.getElementById("form-message").innerText = "❌ Failed to add product.";
+      }
     });
 
-    function logout() {
+    // ✅ Logout
+    document.getElementById("logout").addEventListener("click", () => {
       localStorage.removeItem("seller_token");
-      window.location.href = "login.html";
-    }
-
-    async function loadDashboard() {
-      const res = await fetch("https://suriyawan-backend-18.onrender.com/api/seller/dashboard", {
-        method: "GET",
-        headers: {
-          "Authorization": "Bearer " + token
-        }
-      });
-      const data = await res.json();
-      if (data.success) {
-        document.getElementById("products").innerHTML =
-          `<p>Total Products: ${data.totalProducts}</p>
-           <p>Total Value: ${data.totalValue}</p>` +
-          data.products.map(p => `
-            <div style="margin:10px;padding:10px;border:1px solid #ccc;">
-              <strong>${p.title}</strong> - ₹${p.price}<br/>
-              ${p.description}<br/>
-              ${p.image ? `<img src="${p.image}" width="100"/>` : ''}
-            </div>
-          `).join('');
-      }
-    }
-
-    loadDashboard();
+      window.location.href = "seller-login.html";
+    });
   </script>
 </body>
 </html>
