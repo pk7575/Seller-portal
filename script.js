@@ -124,6 +124,7 @@ function loadSellerProfile() {
         document.getElementById("profileUsername").textContent = data.seller.username;
         document.getElementById("profileCategory").textContent = data.seller.category || "Not Set";
         document.getElementById("profilePincode").textContent = data.seller.pincode || "Not Set";
+        document.getElementById("profilePhase").textContent = data.seller.phase || "Not Set"; // ✅ Phase support added
         document.getElementById("sellerId").textContent = `Seller ID: ${data.seller._id}`;
       }
     });
