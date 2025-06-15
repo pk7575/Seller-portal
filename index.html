@@ -76,6 +76,12 @@
       border-radius: 8px;
       margin-bottom: 20px;
     }
+    img.product-image {
+      max-width: 100px;
+      height: auto;
+      display: block;
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
@@ -119,12 +125,13 @@
         <button onclick="updateProfile()">💾 Update Profile</button>
       </div>
 
-      <!-- ➕ Add Product -->
+      <!-- ➕ Add Product (with image upload) -->
       <h3>Add New Product</h3>
       <input type="text" id="productName" placeholder="Product Name" />
       <input type="number" id="productPrice" placeholder="Price" />
       <textarea id="productDesc" placeholder="Description"></textarea>
-      <button onclick="addProduct()">➕ Add Product</button>
+      <input type="file" id="productImage" accept="image/*" />
+      <button onclick="addProduct()">📷 Add Product with Image</button>
 
       <!-- 📋 Product List -->
       <h3>📋 Your Products</h3>
