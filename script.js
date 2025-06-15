@@ -1,6 +1,6 @@
 const BASE_URL = "https://suriyawan-saffari-backend.onrender.com/api/seller";
 
-// 🔐 Login Function
+// 🔐 Login
 function login() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -22,26 +22,23 @@ function login() {
         alert("❌ Login failed: " + data.message);
       }
     })
-    .catch(err => {
-      console.error(err);
-      alert("⚠️ Server error. Please try again later.");
-    });
+    .catch(() => alert("⚠️ Server error. Please try again later."));
 }
 
-// 🔓 Logout Function
+// 🔓 Logout
 function logout() {
   localStorage.removeItem("sellerToken");
   location.reload();
 }
 
-// ➕ Add Product Function
+// ➕ Add Product
 function addProduct() {
   const name = document.getElementById("productName").value.trim();
   const price = document.getElementById("productPrice").value.trim();
   const description = document.getElementById("productDesc").value.trim();
-
   const token = localStorage.getItem("sellerToken");
-  if (!token) return alert("❌ Unauthorized. Please login again.");
+
+  if (!token) return alert("❌ Please login again");
 
   fetch(`${BASE_URL}/product`, {
     method: "POST",
@@ -54,19 +51,16 @@ function addProduct() {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-        alert("✅ Product added successfully!");
-        loadProducts();
+        alert("✅ Product added!");
         document.getElementById("productName").value = "";
         document.getElementById("productPrice").value = "";
         document.getElementById("productDesc").value = "";
+        loadProducts();
       } else {
-        alert("❌ Failed to add product: " + data.message);
+        alert("❌ " + data.message);
       }
     })
-    .catch(err => {
-      console.error(err);
-      alert("⚠️ Error adding product.");
-    });
+    .catch(() => alert("⚠️ Error adding product"));
 }
 
 // 📋 Load All Products
@@ -83,22 +77,20 @@ function loadProducts() {
       list.innerHTML = "";
 
       if (data.products && data.products.length > 0) {
-        data.products.forEach(p => {
-          const item = document.createElement("li");
-          item.innerHTML = `
-            <strong>${p.name}</strong> - ₹${p.price} <br/>
-            <small>${p.description}</small>
+        data.products.forEach(product => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <strong>${product.name}</strong> - ₹${product.price}<br>
+            <small>${product.description}</small>
+            <!-- ✏️ Future: Edit/Delete buttons can be added here -->
           `;
-          list.appendChild(item);
+          list.appendChild(li);
         });
       } else {
-        list.innerHTML = "<li>No products added yet.</li>";
+        list.innerHTML = "<li>No products found.</li>";
       }
     })
-    .catch(err => {
-      console.error(err);
-      alert("⚠️ Failed to load products.");
-    });
+    .catch(() => alert("⚠️ Could not fetch products"));
 }
 
 // 🧑‍💼 Load Seller Profile
@@ -117,12 +109,10 @@ function loadSellerProfile() {
         document.getElementById("profilePincode").textContent = data.seller.pincode || "Not Set";
       }
     })
-    .catch(err => {
-      console.error("⚠️ Error loading profile", err);
-    });
+    .catch(() => console.log("⚠️ Failed to load seller profile"));
 }
 
-// 🚀 Auto Login if Token Exists
+// 🚀 Auto Login
 window.onload = () => {
   const token = localStorage.getItem("sellerToken");
   if (token) {
