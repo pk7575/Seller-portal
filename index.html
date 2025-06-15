@@ -3,37 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Seller Dashboard - Suriyawan Saffari</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Seller Dashboard - Suriyawan</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f2f2f2; }
+    .section { margin-bottom: 20px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    input, textarea, button { display: block; margin: 10px 0; padding: 8px; width: 100%; max-width: 400px; }
+    ul { list-style: none; padding: 0; }
+    li { background: #e9e9e9; margin: 5px 0; padding: 10px; border-radius: 5px; }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🛍️ Seller Portal</h1>
 
-    <div id="login-section" class="card">
-      <h2>🔐 Seller Login</h2>
-      <input type="text" id="username" placeholder="Username" />
-      <input type="password" id="password" placeholder="Password" />
-      <button onclick="login()">Login</button>
-    </div>
+  <!-- 🔐 Login Section -->
+  <div class="section" id="loginSection">
+    <h2>Seller Login</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="loginSeller()">🔐 Login</button>
+  </div>
 
-    <div id="dashboard" class="hidden">
-      <h2>👋 Welcome, Seller</h2>
-      <button onclick="logout()">🚪 Logout</button>
+  <!-- 📦 Dashboard -->
+  <div class="section hidden" id="dashboardSection">
+    <h2>📦 Product Dashboard</h2>
 
-      <div class="card">
-        <h3>➕ Add Product</h3>
-        <input type="text" id="productName" placeholder="Product Name" />
-        <input type="number" id="productPrice" placeholder="Price (₹)" />
-        <textarea id="productDesc" placeholder="Description"></textarea>
-        <button onclick="addProduct()">Add Product</button>
-      </div>
+    <!-- ➕ Add Product -->
+    <h3>Add Product</h3>
+    <input type="text" id="productName" placeholder="Product Name" />
+    <input type="number" id="productPrice" placeholder="Price" />
+    <textarea id="productDescription" placeholder="Description"></textarea>
+    <button onclick="addProduct()">➕ Add Product</button>
 
-      <div class="card">
-        <h3>📦 Your Products</h3>
-        <div id="productList" class="product-list"></div>
-      </div>
-    </div>
+    <!-- 📋 Product List -->
+    <h3>📋 Your Products</h3>
+    <ul id="productList">Loading...</ul>
+
+    <!-- 🔓 Logout -->
+    <button onclick="logoutSeller()">🔓 Logout</button>
   </div>
 
   <script src="script.js"></script>
