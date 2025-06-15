@@ -1,32 +1,96 @@
-// Seller Portal Script
+const BASE_URL = "https://suriyawan-saffari-backend.onrender.com/api/seller";
 
-// 👇 Backend base URL
-const BASE_URL = "https://suriyawan-saffari-backend.onrender.com";
-
-// When page loads
 document.addEventListener("DOMContentLoaded", () => {
-  const welcome = document.getElementById("welcome-msg");
-  if (welcome) {
-    welcome.innerText = "🛒 Seller Dashboard Connected to Backend!";
+  const token = localStorage.getItem("sellerToken");
+  if (token) {
+    document.getElementById("login-section").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    loadProducts();
   }
+});
 
-  // Example: Fetch seller dashboard stats
-  fetch(`${BASE_URL}/api/seller/dashboard`)
+function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  fetch(`${BASE_URL}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
     .then(res => res.json())
     .then(data => {
-      console.log("📦 Seller Stats:", data);
-
-      const statsDiv = document.getElementById("stats");
-      if (statsDiv) {
-        statsDiv.innerHTML = `
-          <p><strong>Products:</strong> ${data.products}</p>
-          <p><strong>Orders:</strong> ${data.orders}</p>
-          <p><strong>Revenue:</strong> ₹${data.revenue}</p>
-        `;
+      if (data.success) {
+        localStorage.setItem("sellerToken", data.token);
+        document.getElementById("login-section").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+        loadProducts();
+      } else {
+        alert("❌ Login failed: " + data.message);
       }
+    })
+    .catch(err => alert("⚠️ Server error"));
+}
 
+function logout() {
+  localStorage.removeItem("sellerToken");
+  location.reload();
+}
+
+function addProduct() {
+  const name = document.getElementById("productName").value;
+  const price = document.getElementById("productPrice").value;
+  const description = document.getElementById("productDesc").value;
+
+  const token = localStorage.getItem("sellerToken");
+
+  fetch(`${BASE_URL}/product`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({ name, price, description })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("✅ Product added!");
+        loadProducts();
+      } else {
+        alert("❌ Failed: " + data.message);
+      }
+    })
+    .catch(err => alert("⚠️ Error adding product"));
+}
+
+function loadProducts() {
+  const token = localStorage.getItem("sellerToken");
+
+  fetch(`${BASE_URL}/products`, {
+    headers: { "Authorization": "Bearer " + token }
+  })
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById("productList");
+      list.innerHTML = "";
+
+      if (data.products && data.products.length > 0) {
+        data.products.forEach(p => {
+          const card = document.createElement("div");
+          card.classList.add("product-card");
+          card.innerHTML = `
+            <h4>${p.name}</h4>
+            <p>₹${p.price}</p>
+            <p>${p.description}</p>
+          `;
+          list.appendChild(card);
+        });
+      } else {
+        list.innerHTML = "<p>No products yet.</p>";
+      }
     })
     .catch(err => {
-      console.error("❌ Error connecting to backend:", err);
+      alert("⚠️ Failed to load products");
     });
-});
+}
