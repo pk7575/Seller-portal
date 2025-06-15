@@ -1,4 +1,3 @@
-<!-- ✅ REPLACEMENT VERSION -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,87 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Seller Dashboard - Suriyawan Saffari</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 0;
-      margin: 0;
-      background: #f5f5f5;
-    }
+    body { font-family: Arial; margin: 0; background: #f5f5f5; }
     header {
-      background: #24292f;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: #24292f; color: white; padding: 10px 20px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    header img {
-      height: 40px;
-    }
-    header h1 {
-      font-size: 20px;
-      margin-left: 10px;
-    }
-    .container {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 20px;
-    }
+    header img { height: 40px; }
+    .container { max-width: 900px; margin: 20px auto; padding: 20px; }
     .section {
-      background: white;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      background: white; padding: 20px; margin-bottom: 20px;
+      border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
     input, textarea, button, select {
-      width: 100%;
-      max-width: 400px;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      width: 100%; max-width: 400px; padding: 10px; margin-top: 10px;
+      font-size: 16px; border-radius: 6px; border: 1px solid #ccc;
     }
     button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
+      background-color: #007bff; color: white; border: none; cursor: pointer;
     }
-    button:hover {
-      background-color: #0056b3;
-    }
-    ul {
-      padding: 0;
-      list-style: none;
-    }
+    button:hover { background-color: #0056b3; }
+    ul { padding: 0; list-style: none; }
     li {
-      background: #e0e0e0;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 6px;
+      background: #e0e0e0; margin-bottom: 10px;
+      padding: 10px; border-radius: 6px;
     }
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
     .profile-box {
-      border: 1px solid #ccc;
-      padding: 10px;
-      background: #f9f9f9;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      border: 1px solid #ccc; padding: 10px; background: #f9f9f9;
+      border-radius: 8px; margin-bottom: 20px;
     }
-    img.product-image {
-      max-width: 100px;
-      height: auto;
-      display: block;
-      margin-bottom: 5px;
-    }
+    img.product-image { max-width: 100px; height: auto; display: block; margin-bottom: 5px; }
+    #bencoResponse { margin-top: 10px; font-style: italic; background: #eef; padding: 10px; border-radius: 6px; }
     @media (max-width: 600px) {
-      input, textarea, button {
-        width: 100%;
-      }
+      input, textarea, button { width: 100%; }
     }
   </style>
 </head>
@@ -131,26 +82,20 @@
         <button onclick="updateProfile()">💾 Update Profile</button>
       </div>
 
-      <!-- ➕ Add Product (Multiple Image Upload) -->
+      <!-- ➕ Add Product -->
       <div class="section">
         <h3>➕ Add New Product</h3>
         <input type="text" id="productName" placeholder="Product Name" />
         <input type="number" id="productPrice" placeholder="Price" />
         <textarea id="productDesc" placeholder="Description"></textarea>
         <input type="file" id="productImage" accept="image/*" />
-        <input type="file" id="productGallery" accept="image/*" multiple />
-        <select id="productCategory">
-          <option value="">Select Category</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Home">Home</option>
-        </select>
         <button onclick="addProduct()">📷 Add Product</button>
       </div>
 
       <!-- 📋 Product List -->
       <div class="section">
         <h3>📋 Your Products</h3>
+        <p><strong>Total Products:</strong> <span id="productCount">0</span></p>
         <ul id="productList">Loading...</ul>
       </div>
 
@@ -165,7 +110,7 @@
       <!-- 📈 Sales Analytics -->
       <div class="section">
         <h3>📈 Sales Analytics</h3>
-        <div id="salesChart">[Analytics Chart Placeholder]</div>
+        <div id="salesChart">[Chart will appear here]</div>
       </div>
 
       <!-- 🔔 Notifications -->
@@ -179,9 +124,9 @@
       <!-- 🤖 Ask Suriyawan Saffari (AI Assistant) -->
       <div class="section">
         <h3>🤖 Ask Suriyawan Saffari (AI Assistant)</h3>
-        <input type="text" id="bencoInput" placeholder="Ask Suriyawan Saffari anything..." />
+        <input type="text" id="bencoInput" placeholder="Ask something..." />
         <button onclick="askBenco()">💬 Ask</button>
-        <div id="bencoResponse" style="margin-top: 10px; font-style: italic;"></div>
+        <div id="bencoResponse">AI will respond here...</div>
       </div>
 
       <!-- 🔓 Logout -->
