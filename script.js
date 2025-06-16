@@ -18,6 +18,8 @@ function login() {
         document.getElementById("dashboardSection").classList.remove("hidden");
         loadSellerProfile();
         loadProducts();
+        loadReviews(); // ✅ load reviews
+        loadSalesChart(); // ✅ load chart
       } else {
         alert("❌ Login failed: " + data.message);
       }
@@ -124,7 +126,7 @@ function loadSellerProfile() {
         document.getElementById("profileUsername").textContent = data.seller.username;
         document.getElementById("profileCategory").textContent = data.seller.category || "Not Set";
         document.getElementById("profilePincode").textContent = data.seller.pincode || "Not Set";
-        document.getElementById("profilePhase").textContent = data.seller.phase || "Not Set"; // ✅ Phase support added
+        document.getElementById("profilePhase").textContent = data.seller.phase || "Not Set";
         document.getElementById("sellerId").textContent = `Seller ID: ${data.seller._id}`;
       }
     });
@@ -233,6 +235,64 @@ function copyProductID(id) {
   });
 }
 
+// 🧠 Ask Benco AI
+function askBenco() {
+  const question = document.getElementById("bencoInput").value.trim();
+  const responseBox = document.getElementById("bencoResponse");
+
+  if (!question) return alert("❓ कृपया कुछ पूछें");
+
+  responseBox.textContent = "🤖 सोच रहा हूँ...";
+
+  // डेमो जवाब
+  setTimeout(() => {
+    responseBox.textContent = "🤖 AI उत्तर: '" + question + "' का उत्तर फिलहाल डेमो है।";
+  }, 1000);
+}
+
+// 📈 Load Sales Chart (demo data)
+function loadSalesChart() {
+  const canvas = document.getElementById("salesChart");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      datasets: [{
+        label: 'Sales ₹',
+        data: [500, 1200, 750, 900, 1500],
+        backgroundColor: 'rgba(75, 192, 192, 0.6)'
+      }]
+    }
+  });
+}
+
+// ⭐ Load Reviews
+function loadReviews() {
+  const token = localStorage.getItem("sellerToken");
+
+  fetch(`${BASE_URL}/reviews`, {
+    headers: { "Authorization": "Bearer " + token }
+  })
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById("reviewList");
+      list.innerHTML = "";
+
+      if (data.reviews && data.reviews.length > 0) {
+        data.reviews.forEach(review => {
+          const li = document.createElement("li");
+          li.textContent = `${review.customerName}: ${review.comment}`;
+          list.appendChild(li);
+        });
+      } else {
+        list.innerHTML = "<li>No reviews available.</li>";
+      }
+    });
+}
+
 // 🚀 Auto Login on Load
 window.onload = () => {
   const token = localStorage.getItem("sellerToken");
@@ -241,5 +301,7 @@ window.onload = () => {
     document.getElementById("dashboardSection").classList.remove("hidden");
     loadSellerProfile();
     loadProducts();
+    loadReviews(); // ✅
+    loadSalesChart(); // ✅
   }
 };
