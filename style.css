@@ -61,9 +61,15 @@ button:disabled {
   cursor: not-allowed;
 }
 
+button:focus {
+  outline: 2px dashed #333;
+  outline-offset: 4px;
+}
+
 /* Hide Elements */
 .hidden {
-  display: none;
+  display: none !important;
+  visibility: hidden;
 }
 
 /* Product List Styling */
@@ -89,6 +95,33 @@ button:disabled {
   object-fit: cover;
   border-radius: 6px;
   margin-bottom: 0.5rem;
+}
+
+/* Seller Profile Box */
+.profile-box {
+  border: 1px solid #ccc;
+  background: #fefefe;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+/* Notification List */
+#notificationList li {
+  padding: 10px;
+  background: #f5f5f5;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
+}
+
+/* Review List */
+#reviewList li {
+  background: #fafafa;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
 /* Section Styling */
