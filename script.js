@@ -13,13 +13,13 @@ function login() {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-        localStorage.setItem("sellerToken", data.token);
+        localStorage.setItem("seller_token", data.token); // 🟢 Updated to consistent token name
         document.getElementById("loginSection").classList.add("hidden");
         document.getElementById("dashboardSection").classList.remove("hidden");
         loadSellerProfile();
         loadProducts();
-        loadReviews(); // ✅ load reviews
-        loadSalesChart(); // ✅ load chart
+        loadReviews();
+        loadSalesChart();
       } else {
         alert("❌ Login failed: " + data.message);
       }
@@ -29,7 +29,8 @@ function login() {
 
 // 🔓 Logout
 function logout() {
-  localStorage.removeItem("sellerToken");
+  localStorage.removeItem("seller_token");
+  sessionStorage.clear();
   location.reload();
 }
 
@@ -39,7 +40,7 @@ function addProduct() {
   const price = document.getElementById("productPrice").value.trim();
   const description = document.getElementById("productDesc").value.trim();
   const imageFile = document.getElementById("productImage").files[0];
-  const token = localStorage.getItem("sellerToken");
+  const token = localStorage.getItem("seller_token");
 
   if (!token) return alert("❌ Please login again");
   if (!name || !price || !description || !imageFile) {
@@ -75,7 +76,7 @@ function addProduct() {
 
 // 📋 Load Products
 function loadProducts() {
-  const token = localStorage.getItem("sellerToken");
+  const token = localStorage.getItem("seller_token");
   if (!token) return;
 
   fetch(`${BASE_URL}/products`, {
@@ -87,7 +88,7 @@ function loadProducts() {
       list.innerHTML = "";
       let count = 0;
 
-      if (data.products && data.products.length > 0) {
+      if (data.products?.length) {
         data.products.forEach(product => {
           count++;
           const li = document.createElement("li");
@@ -114,7 +115,7 @@ function loadProducts() {
 
 // 🧑‍💼 Load Seller Profile
 function loadSellerProfile() {
-  const token = localStorage.getItem("sellerToken");
+  const token = localStorage.getItem("seller_token");
   if (!token) return;
 
   fetch(`${BASE_URL}/profile`, {
@@ -138,7 +139,7 @@ function editProduct(id, currentName, currentPrice, currentDesc) {
   const price = prompt("New Price:", currentPrice);
   const description = prompt("New Description:", currentDesc);
 
-  const token = localStorage.getItem("sellerToken");
+  const token = localStorage.getItem("seller_token");
   if (!token) return alert("❌ Please login again");
 
   fetch(`${BASE_URL}/product/${id}`, {
@@ -164,7 +165,7 @@ function editProduct(id, currentName, currentPrice, currentDesc) {
 function deleteProduct(id) {
   if (!confirm("Delete this product?")) return;
 
-  const token = localStorage.getItem("sellerToken");
+  const token = localStorage.getItem("seller_token");
   if (!token) return alert("❌ Please login again");
 
   fetch(`${BASE_URL}/product/${id}`, {
@@ -187,7 +188,7 @@ function updateProfile() {
   const category = document.getElementById("updateCategory").value.trim();
   const pincode = document.getElementById("updatePincode").value.trim();
   const password = document.getElementById("updatePassword").value.trim();
-  const token = localStorage.getItem("sellerToken");
+  const token = localStorage.getItem("seller_token");
 
   if (!token) return alert("❌ Please login again");
 
@@ -215,7 +216,8 @@ function updateProfile() {
 
 // 🚦 Toggle Availability
 function toggleProduct(id) {
-  const token = localStorage.getItem("sellerToken");
+  const token = localStorage.getItem("seller_token");
+  if (!token) return;
 
   fetch(`${BASE_URL}/product/${id}/toggle`, {
     method: "PATCH",
@@ -235,7 +237,7 @@ function copyProductID(id) {
   });
 }
 
-// 🧠 Ask Benco AI
+// 🧠 Ask Benco AI (Demo)
 function askBenco() {
   const question = document.getElementById("bencoInput").value.trim();
   const responseBox = document.getElementById("bencoResponse");
@@ -244,13 +246,12 @@ function askBenco() {
 
   responseBox.textContent = "🤖 सोच रहा हूँ...";
 
-  // डेमो जवाब
   setTimeout(() => {
-    responseBox.textContent = "🤖 AI उत्तर: '" + question + "' का उत्तर फिलहाल डेमो है।";
+    responseBox.textContent = `🤖 AI उत्तर: '${question}' का उत्तर फिलहाल डेमो है।`;
   }, 1000);
 }
 
-// 📈 Load Sales Chart (demo data)
+// 📈 Load Sales Chart (demo)
 function loadSalesChart() {
   const canvas = document.getElementById("salesChart");
   if (!canvas) return;
@@ -271,7 +272,7 @@ function loadSalesChart() {
 
 // ⭐ Load Reviews
 function loadReviews() {
-  const token = localStorage.getItem("sellerToken");
+  const token = localStorage.getItem("seller_token");
 
   fetch(`${BASE_URL}/reviews`, {
     headers: { "Authorization": "Bearer " + token }
@@ -281,7 +282,7 @@ function loadReviews() {
       const list = document.getElementById("reviewList");
       list.innerHTML = "";
 
-      if (data.reviews && data.reviews.length > 0) {
+      if (data.reviews?.length) {
         data.reviews.forEach(review => {
           const li = document.createElement("li");
           li.textContent = `${review.customerName}: ${review.comment}`;
@@ -295,13 +296,13 @@ function loadReviews() {
 
 // 🚀 Auto Login on Load
 window.onload = () => {
-  const token = localStorage.getItem("sellerToken");
+  const token = localStorage.getItem("seller_token");
   if (token) {
     document.getElementById("loginSection").classList.add("hidden");
     document.getElementById("dashboardSection").classList.remove("hidden");
     loadSellerProfile();
     loadProducts();
-    loadReviews(); // ✅
-    loadSalesChart(); // ✅
+    loadReviews();
+    loadSalesChart();
   }
 };
