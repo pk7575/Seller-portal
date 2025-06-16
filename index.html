@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Seller Dashboard - Suriyawan Saffari</title>
+  <title>Seller Portal - Suriyawan Saffari</title>
+  <meta name="description" content="Suriyawan Saffari Seller Dashboard for managing products, profile, and sales.">
   <style>
     body { font-family: Arial; margin: 0; background: #f5f5f5; }
     header {
       background: #24292f; color: white; padding: 10px 20px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    header img { height: 40px; }
+    header img { height: 40px; margin-right: 10px; }
     .container { max-width: 900px; margin: 20px auto; padding: 20px; }
     .section {
       background: white; padding: 20px; margin-bottom: 20px;
@@ -46,7 +47,7 @@
   <!-- 🔝 Navbar -->
   <header>
     <div style="display:flex; align-items:center;">
-      <img src="https://i.imgur.com/HEZC2xL.png" alt="Suriyawan Saffari Logo">
+      <img src="https://i.imgur.com/HEZC2xL.png" alt="Suriyawan Saffari Logo" title="Suriyawan Saffari">
       <h1>Seller Portal</h1>
     </div>
     <span>🛍️ Suriyawan Saffari</span>
@@ -71,7 +72,7 @@
         <p><strong>Username:</strong> <span id="profileUsername">--</span></p>
         <p><strong>Category:</strong> <span id="profileCategory">--</span></p>
         <p><strong>Pincode:</strong> <span id="profilePincode">--</span></p>
-        <p><strong>Phase:</strong> <span id="profilePhase">--</span></p> <!-- ✅ Phase Added -->
+        <p><strong>Phase:</strong> <span id="profilePhase">--</span></p>
       </div>
 
       <!-- 🔄 Update Profile -->
@@ -111,7 +112,7 @@
       <!-- 📈 Sales Analytics -->
       <div class="section">
         <h3>📈 Sales Analytics</h3>
-        <div id="salesChart">[Chart will appear here]</div>
+        <canvas id="salesChart" width="400" height="200"></canvas>
       </div>
 
       <!-- 🔔 Notifications -->
@@ -136,6 +137,8 @@
 
   </div>
 
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
