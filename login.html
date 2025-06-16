@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🔐 Seller Login</title>
   <style>
     body {
@@ -49,9 +50,9 @@
 </head>
 <body>
   <h2>🔐 Seller Login</h2>
-  <form id="login-form">
-    <input type="text" id="username" placeholder="Enter your username (e.g., sellerS1 to sellerS25)" required />
-    <input type="password" id="password" placeholder="Enter your password" required />
+  <form id="login-form" autocomplete="off">
+    <input type="text" id="username" placeholder="Enter your username (e.g., sellerS1 to sellerS25)" required autocomplete="off" />
+    <input type="password" id="password" placeholder="Enter your password" required autocomplete="off" />
     <button type="submit">Login</button>
   </form>
   <p id="login-msg"></p>
@@ -62,19 +63,27 @@
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
 
-      // ✅ Seller S1–S25 validation is handled at backend level
-      const res = await fetch("https://suriyawan-backend-18.onrender.com/api/seller/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
+      if (!username || !password) {
+        document.getElementById("login-msg").textContent = "⚠️ Both fields are required.";
+        return;
+      }
 
-      const data = await res.json();
-      if (data.success) {
-        localStorage.setItem("seller_token", data.token);
-        window.location.href = "seller-dashboard.html";
-      } else {
-        document.getElementById("login-msg").textContent = data.message || "❌ Login failed!";
+      try {
+        const res = await fetch("https://suriyawan-backend-18.onrender.com/api/seller/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          localStorage.setItem("seller_token", data.token);
+          window.location.href = "seller-dashboard.html";
+        } else {
+          document.getElementById("login-msg").textContent = data.message || "❌ Login failed!";
+        }
+      } catch {
+        document.getElementById("login-msg").textContent = "⚠️ Network error.";
       }
     });
   </script>
